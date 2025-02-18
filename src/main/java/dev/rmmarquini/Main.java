@@ -17,40 +17,46 @@ public class Main {
 		logger.info("Welcome to the Library Management System!");
 
 		Scanner scanner = new Scanner(System.in);
-
-		logger.info("Please, choose an option:");
+		boolean keepRunning = true;
 		List<LibraryManagementOptions> nav = LibraryManagementOptions.getValues();
-		for (LibraryManagementOptions value : nav) {
-			logger.info("{} - {}", value.getOption(), value.getDescription());
-		}
-		int option = scanner.nextInt();
 
-		LibraryManagementOptions selectedOption = LibraryManagementOptions.getEnumByOption(option);
+		while (keepRunning) {
+			logger.info("Please, choose an option:");
+			for (LibraryManagementOptions value : nav) {
+				logger.info("{} - {}", value.getOption(), value.getDescription());
+			}
+			int option = scanner.nextInt();
 
-		if (selectedOption == null) {
-			logger.error("Invalid option. Please, try again.");
-			return;
-		}
+			LibraryManagementOptions selectedOption = LibraryManagementOptions.getEnumByOption(option);
 
-		switch (selectedOption) {
-			case BOOKS:
-				logger.info("You selected: {}", selectedOption.getDescription());
-				break;
-			case AUTHORS:
-				logger.info("You selected: {}", selectedOption.getDescription());
-				break;
-			case USERS:
-				logger.info("You selected: {}", selectedOption.getDescription());
-				break;
-			case LOANS:
-				logger.info("You selected: {}", selectedOption.getDescription());
-				break;
-			case EXIT:
-				logger.info("You selected: {}", selectedOption.getDescription());
-				break;
-			default:
+			if (selectedOption == null) {
 				logger.error("Invalid option. Please, try again.");
-				break;
+				return;
+			}
+
+			switch (selectedOption) {
+				case BOOKS:
+					logger.info("You selected: {}", selectedOption.getDescription());
+					break;
+				case AUTHORS:
+					logger.info("You selected: {}", selectedOption.getDescription());
+					break;
+				case USERS:
+					logger.info("You selected: {}", selectedOption.getDescription());
+					break;
+				case LOANS:
+					logger.info("You selected: {}", selectedOption.getDescription());
+					break;
+				case EXIT:
+					logger.info("You selected: {}", selectedOption.getDescription());
+					keepRunning = false;
+					break;
+				default:
+					logger.error("Invalid option. Please, try again.");
+					keepRunning = false;
+					break;
+			}
+
 		}
 
 
