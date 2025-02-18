@@ -25,13 +25,14 @@ public class Main {
 			for (LibraryManagementOptions value : nav) {
 				logger.info("{} - {}", value.getOption(), value.getDescription());
 			}
-			int option = scanner.nextInt();
 
+			int option = scanner.nextInt();
 			LibraryManagementOptions selectedOption = LibraryManagementOptions.getEnumByOption(option);
 
-			if (selectedOption == null) {
-				logger.error("Invalid option. Please, try again.");
-				return;
+			while (selectedOption == null) {
+				logger.error("Invalid option. Please, try again...");
+				option = scanner.nextInt();
+				selectedOption = LibraryManagementOptions.getEnumByOption(option);
 			}
 
 			switch (selectedOption) {
@@ -47,12 +48,8 @@ public class Main {
 				case LOANS:
 					logger.info("You selected: {}", selectedOption.getDescription());
 					break;
-				case EXIT:
+				default: // EXIT
 					logger.info("You selected: {}", selectedOption.getDescription());
-					keepRunning = false;
-					break;
-				default:
-					logger.error("Invalid option. Please, try again.");
 					keepRunning = false;
 					break;
 			}
