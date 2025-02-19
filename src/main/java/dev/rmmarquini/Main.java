@@ -37,7 +37,7 @@ public class Main {
 
 		library = libraryBuilder.build();
 
-		if (library.getAuthors().isEmpty() && library.getBooks().isEmpty()) {
+		if (library.getAuthors().isEmpty() && library.getBooks().isEmpty() && library.getUsers().isEmpty()) {
 			logger.error("No data loaded. Exiting...");
 			System.exit(1);
 		} else {
@@ -71,15 +71,39 @@ public class Main {
 
 			switch (selectedOption) {
 				case BOOKS:
+					// TODO: enumerate options for manage books
+					// TODO: add book
+					// TODO: update book
+					// TODO: register a book loan
+					// TODO: list all books
+					// TODO: search book by title
+					// TODO: search book by author
 					break;
 
 				case AUTHORS:
+					// TODO: enumerate options for manage authors
+					// TODO: add author
+					// TODO: update author
+					// TODO: remove author
+					// TODO: list all authors
+					// TODO: search author by name
 					break;
 
 				case USERS:
+					// TODO: enumerate options for manage users
+					// TODO: add user
+					// TODO: update user
+					// TODO: remove user
+					// TODO: list all users
+					// TODO: search user by name
 					break;
 
 				case LOANS:
+					// TODO: enumerate options for manage loans
+					// TODO: list all loans
+					// TODO: list loans by user
+					// TODO: list loans by book
+					// TODO: list loans by date
 					break;
 
 				default: // EXIT
