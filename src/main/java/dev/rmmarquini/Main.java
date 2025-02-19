@@ -1,6 +1,10 @@
 package dev.rmmarquini;
 
+import dev.rmmarquini.entity.Library;
 import dev.rmmarquini.enums.LibraryManagementOptions;
+import dev.rmmarquini.repository.AuthorsRepository;
+import dev.rmmarquini.repository.BooksRepository;
+import dev.rmmarquini.repository.UsersRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,6 +20,34 @@ public class Main {
 		logger.info(new String(new char[25]).replace("\0", "-"));
 		logger.info("Welcome to the Library Management System!");
 
+		// -----------------------------------------------------------------------------------------------------------
+		logger.info("Loading data...");
+		Library.Builder libraryBuilder = new Library.Builder();
+
+		AuthorsRepository authorsRepository = new AuthorsRepository(libraryBuilder);
+		authorsRepository.load();
+
+		Library library = libraryBuilder.build();
+
+		BooksRepository booksRepository = new BooksRepository(libraryBuilder, library);
+		booksRepository.load();
+
+		UsersRepository usersRepository = new UsersRepository(libraryBuilder);
+		usersRepository.load();
+
+		library = libraryBuilder.build();
+
+		if (library.getAuthors().isEmpty() && library.getBooks().isEmpty()) {
+			logger.error("No data loaded. Exiting...");
+			System.exit(1);
+		} else {
+			logger.info("Data loaded successfully!");
+			logger.info("Authors: {}", library.getAuthors());
+			logger.info("Books: {}", library.getBooks());
+			logger.info("Users: {}", library.getUsers());
+		}
+
+		// -----------------------------------------------------------------------------------------------------------
 		Scanner scanner = new Scanner(System.in);
 		boolean keepRunning = true;
 		List<LibraryManagementOptions> nav = LibraryManagementOptions.getValues();
@@ -35,27 +67,27 @@ public class Main {
 				selectedOption = LibraryManagementOptions.getEnumByOption(option);
 			}
 
+			logger.info("User selected: {}", selectedOption.getDescription());
+
 			switch (selectedOption) {
 				case BOOKS:
-					logger.info("You selected: {}", selectedOption.getDescription());
 					break;
+
 				case AUTHORS:
-					logger.info("You selected: {}", selectedOption.getDescription());
 					break;
+
 				case USERS:
-					logger.info("You selected: {}", selectedOption.getDescription());
 					break;
+
 				case LOANS:
-					logger.info("You selected: {}", selectedOption.getDescription());
 					break;
+
 				default: // EXIT
-					logger.info("You selected: {}", selectedOption.getDescription());
 					keepRunning = false;
 					break;
 			}
 
 		}
-
 
 		logger.info("Goodbye!");
 		logger.info(new String(new char[25]).replace("\0", "-"));

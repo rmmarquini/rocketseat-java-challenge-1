@@ -1,21 +1,23 @@
 package dev.rmmarquini.entity;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 public class Book {
 
 	private final String id;
 	private String title;
-	private Author author;
+	private final List<Author> authors;
 	private boolean available;
 	private LocalDate registerDate;
 	private LocalDate updateDate;
 
-	public Book(String id, String title, Author author, boolean available, LocalDate registerDate) {
+	public Book(String id, String title, boolean available, LocalDate registerDate) {
 		this.id = id;
 		this.title = title;
-		this.author = author;
+		this.authors = new LinkedList<>();
 		this.available = available;
 		this.registerDate = registerDate;
 	}
@@ -32,12 +34,12 @@ public class Book {
 		this.title = title;
 	}
 
-	public Author getAuthor() {
-		return author;
+	public List<Author> getAuthors() {
+		return authors;
 	}
 
-	public void setAuthor(Author author) {
-		this.author = author;
+	public void setAuthors(List<Author> authors) {
+		this.authors.addAll(authors);
 	}
 
 	public boolean isAvailable() {
@@ -68,12 +70,12 @@ public class Book {
 	public boolean equals(Object o) {
 		if (o == null || getClass() != o.getClass()) return false;
 		Book book = (Book) o;
-		return available == book.available && Objects.equals(id, book.id) && Objects.equals(title, book.title) && Objects.equals(author, book.author) && Objects.equals(registerDate, book.registerDate) && Objects.equals(updateDate, book.updateDate);
+		return available == book.available && Objects.equals(id, book.id) && Objects.equals(title, book.title) && Objects.equals(authors, book.authors) && Objects.equals(registerDate, book.registerDate) && Objects.equals(updateDate, book.updateDate);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, title, author, available, registerDate, updateDate);
+		return Objects.hash(id, title, authors, available, registerDate, updateDate);
 	}
 
 	@Override
@@ -81,7 +83,7 @@ public class Book {
 		return "Book{" +
 				"id='" + id + '\'' +
 				", title='" + title + '\'' +
-				", author=" + author +
+				", author=" + authors +
 				", available=" + available +
 				", registerDate=" + registerDate +
 				", updateDate=" + updateDate +

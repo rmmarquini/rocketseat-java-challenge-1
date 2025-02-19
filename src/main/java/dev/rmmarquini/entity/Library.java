@@ -27,11 +27,15 @@ public class Library {
 
 	public Book getBookByAuthor(String author) {
 		Author authorObj = this.authors.stream().filter(a -> a.getName().equals(author)).findFirst().orElse(null);
-		return authorObj != null ? this.books.stream().filter(b -> b.getAuthor().equals(authorObj)).findFirst().orElse(null) : null;
+		return authorObj != null ? this.books.stream().filter(b -> b.getAuthors().contains(authorObj)).findFirst().orElse(null) : null;
 	}
 
 	public List<Author> getAuthors() {
 		return authors;
+	}
+
+	public Author getAuthorByName(String name) {
+		return this.authors.stream().filter(a -> a.getName().equals(name)).findFirst().orElse(null);
 	}
 
 	public List<User> getUsers() {
