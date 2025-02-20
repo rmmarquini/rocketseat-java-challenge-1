@@ -24,6 +24,7 @@ public class BooksRepository extends AbstractRepository {
 		this.library = library;
 	}
 
+	@Override
 	public void load() {
 
 		List<Author> tmpAuthors = new LinkedList<>();
@@ -74,6 +75,7 @@ public class BooksRepository extends AbstractRepository {
 
 	}
 
+	@Override
 	public void manage(Scanner scanner) {
 
 		boolean keepManaging = true;

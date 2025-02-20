@@ -4,6 +4,7 @@ import dev.rmmarquini.entity.Library;
 import dev.rmmarquini.enums.LibraryManagementOptions;
 import dev.rmmarquini.repository.AuthorsRepository;
 import dev.rmmarquini.repository.BooksRepository;
+import dev.rmmarquini.repository.LoansRepository;
 import dev.rmmarquini.repository.UsersRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -75,29 +76,16 @@ public class Main {
 					break;
 
 				case AUTHORS:
-					// TODO: enumerate options for manage authors
-					// TODO: add author
-					// TODO: update author
-					// TODO: remove author
-					// TODO: list all authors
-					// TODO: search author by name
+					authorsRepository.manage(scanner);
 					break;
 
 				case USERS:
-					// TODO: enumerate options for manage users
-					// TODO: add user
-					// TODO: update user
-					// TODO: remove user
-					// TODO: list all users
-					// TODO: search user by name
+					usersRepository.manage(scanner);
 					break;
 
 				case LOANS:
-					// TODO: enumerate options for manage loans
-					// TODO: list all loans
-					// TODO: list loans by user
-					// TODO: list loans by book
-					// TODO: list loans by date
+					LoansRepository loansRepository = new LoansRepository(libraryBuilder, library);
+					loansRepository.manage(scanner);
 					break;
 
 				default: // EXIT

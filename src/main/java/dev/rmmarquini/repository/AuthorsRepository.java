@@ -2,11 +2,15 @@ package dev.rmmarquini.repository;
 
 import dev.rmmarquini.entity.Author;
 import dev.rmmarquini.entity.Library;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDate;
 import java.util.Scanner;
 
 public class AuthorsRepository extends AbstractRepository {
+
+	private final Logger logger = LogManager.getLogger(AuthorsRepository.class.getName());
 
 	private final Library.Builder libraryBuilder;
 	private final Library library;
@@ -16,6 +20,7 @@ public class AuthorsRepository extends AbstractRepository {
 		this.library = library;
 	}
 
+	@Override
 	public void load() {
 
 		Author author1 = new Author(generateId(), "Robert C. Martin", LocalDate.of(1952, 12, 5));
@@ -38,8 +43,14 @@ public class AuthorsRepository extends AbstractRepository {
 
 	}
 
+	@Override
 	public void manage(Scanner scanner) {
-
+		// TODO: enumerate options for manage authors
+		// TODO: add author
+		// TODO: update author
+		// TODO: remove author
+		// TODO: list all authors
+		// TODO: search author by name
 	}
 
 }
