@@ -4,13 +4,16 @@ import dev.rmmarquini.entity.Library;
 import dev.rmmarquini.entity.User;
 
 import java.time.LocalDate;
+import java.util.Scanner;
 
 public class UsersRepository extends AbstractRepository {
 
 	private final Library.Builder libraryBuilder;
+	private final Library library;
 
-	public UsersRepository(Library.Builder libraryBuilder) {
+	public UsersRepository(Library.Builder libraryBuilder, Library library) {
 		this.libraryBuilder = libraryBuilder;
+		this.library = library;
 	}
 
 	public void load() {
@@ -23,6 +26,10 @@ public class UsersRepository extends AbstractRepository {
 				.addUser(user1)
 				.addUser(user2)
 				.addUser(user3);
+
+	}
+
+	public void manage(Scanner scanner) {
 
 	}
 

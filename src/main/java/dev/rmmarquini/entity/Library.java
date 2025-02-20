@@ -2,6 +2,7 @@ package dev.rmmarquini.entity;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Library {
 
@@ -22,12 +23,12 @@ public class Library {
 	}
 
 	public Book getBookByTitle(String title) {
-		return this.books.stream().filter(b -> b.getTitle().equals(title)).findFirst().orElse(null);
+		return this.books.stream().filter(b -> b.getTitle().equalsIgnoreCase(title)).findFirst().orElse(null);
 	}
 
-	public Book getBookByAuthor(String author) {
-		Author authorObj = this.authors.stream().filter(a -> a.getName().equals(author)).findFirst().orElse(null);
-		return authorObj != null ? this.books.stream().filter(b -> b.getAuthors().contains(authorObj)).findFirst().orElse(null) : null;
+	public List<Book> getBookByAuthor(String author) {
+		Author authorObj = this.authors.stream().filter(a -> a.getName().equalsIgnoreCase(author)).findFirst().orElse(null);
+		return authorObj != null ? this.books.stream().filter(b -> b.getAuthors().contains(authorObj)).collect(Collectors.toList()) : null;
 	}
 
 	public List<Author> getAuthors() {

@@ -3,12 +3,18 @@ package dev.rmmarquini.repository;
 import dev.rmmarquini.entity.Author;
 import dev.rmmarquini.entity.Book;
 import dev.rmmarquini.entity.Library;
+import dev.rmmarquini.enums.BooksManagementOptions;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 public class BooksRepository extends AbstractRepository {
+
+	private final Logger logger = LogManager.getLogger(BooksRepository.class.getName());
 
 	private final Library.Builder libraryBuilder;
 	private final Library library;
@@ -66,6 +72,76 @@ public class BooksRepository extends AbstractRepository {
 				.addBook(book5)
 				.addBook(book6);
 
+	}
+
+	public void manage(Scanner scanner) {
+
+		boolean keepManaging = true;
+		List<BooksManagementOptions> nav = BooksManagementOptions.getValues();
+
+		while (keepManaging) {
+
+			logger.info("Please, choose an option to manage the books:");
+			for (BooksManagementOptions value : nav) {
+				logger.info("{} - {}", value.getOption(), value.getDescription());
+			}
+			int booksOption = scanner.nextInt();
+
+			BooksManagementOptions selectedBooksOption = BooksManagementOptions.getEnumByOption(booksOption);
+
+			while (selectedBooksOption == null) {
+				logger.error("Invalid books option. Please, try again...");
+				booksOption = scanner.nextInt();
+				selectedBooksOption = BooksManagementOptions.getEnumByOption(booksOption);
+			}
+
+			logger.info("Books management option selected by user: {}", selectedBooksOption.getDescription());
+
+			switch (selectedBooksOption) {
+				case ADD_BOOK:
+					break;
+
+				case UPDATE_BOOK:
+					break;
+
+				case LOAN_BOOK:
+					break;
+
+				case LIST_BOOKS:
+					logger.info("Books: {}", library.getBooks());
+					break;
+
+				case SEARCH_BOOK_BY_TITLE:
+					logger.info("Please, enter the book title:");
+					scanner.nextLine(); // Consume the newline character
+					String title = scanner.nextLine();
+					Book bookByTitle = library.getBookByTitle(title);
+					logger.info(message(bookByTitle));
+					break;
+
+				case SEARCH_BOOK_BY_AUTHOR:
+					logger.info("Please, enter the author name:");
+					scanner.nextLine(); // Consume the newline character
+					String authorName = scanner.nextLine();
+					List<Book> booksByAuthor = library.getBookByAuthor(authorName);
+					if (booksByAuthor == null) {
+						logger.info("Author not found.");
+						break;
+					}
+					for (Book b : booksByAuthor) logger.info(message(b));
+					break;
+
+				default:
+					keepManaging = false;
+					break;  // EXIT
+			}
+
+		}
+
+	}
+
+	private String message(Book book) {
+		return book != null ? "Book found: " + book : "Book not found.";
 	}
 
 }

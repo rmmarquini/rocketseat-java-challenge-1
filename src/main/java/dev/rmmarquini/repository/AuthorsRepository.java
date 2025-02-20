@@ -4,13 +4,16 @@ import dev.rmmarquini.entity.Author;
 import dev.rmmarquini.entity.Library;
 
 import java.time.LocalDate;
+import java.util.Scanner;
 
 public class AuthorsRepository extends AbstractRepository {
 
 	private final Library.Builder libraryBuilder;
+	private final Library library;
 
-	public AuthorsRepository(Library.Builder libraryBuilder) {
+	public AuthorsRepository(Library.Builder libraryBuilder, Library library) {
 		this.libraryBuilder = libraryBuilder;
+		this.library = library;
 	}
 
 	public void load() {
@@ -32,6 +35,10 @@ public class AuthorsRepository extends AbstractRepository {
 			.addAuthor(author6)
 			.addAuthor(author7)
 			.addAuthor(author8);
+
+	}
+
+	public void manage(Scanner scanner) {
 
 	}
 

@@ -21,20 +21,20 @@ public class Main {
 		logger.info("Welcome to the Library Management System!");
 
 		// -----------------------------------------------------------------------------------------------------------
-		logger.info("Loading data...");
+		logger.info("Loading library's data...");
 		Library.Builder libraryBuilder = new Library.Builder();
-
-		AuthorsRepository authorsRepository = new AuthorsRepository(libraryBuilder);
-		authorsRepository.load();
-
 		Library library = libraryBuilder.build();
+
+		AuthorsRepository authorsRepository = new AuthorsRepository(libraryBuilder, library);
+		authorsRepository.load();
+		library = libraryBuilder.build();
 
 		BooksRepository booksRepository = new BooksRepository(libraryBuilder, library);
 		booksRepository.load();
+		library = libraryBuilder.build();
 
-		UsersRepository usersRepository = new UsersRepository(libraryBuilder);
+		UsersRepository usersRepository = new UsersRepository(libraryBuilder, library);
 		usersRepository.load();
-
 		library = libraryBuilder.build();
 
 		if (library.getAuthors().isEmpty() && library.getBooks().isEmpty() && library.getUsers().isEmpty()) {
@@ -53,31 +53,25 @@ public class Main {
 		List<LibraryManagementOptions> nav = LibraryManagementOptions.getValues();
 
 		while (keepRunning) {
-			logger.info("Please, choose an option:");
+			logger.info("Please, choose an option to manage the library:");
 			for (LibraryManagementOptions value : nav) {
 				logger.info("{} - {}", value.getOption(), value.getDescription());
 			}
 
-			int option = scanner.nextInt();
-			LibraryManagementOptions selectedOption = LibraryManagementOptions.getEnumByOption(option);
+			int systemOption = scanner.nextInt();
+			LibraryManagementOptions selectedSystemOption = LibraryManagementOptions.getEnumByOption(systemOption);
 
-			while (selectedOption == null) {
-				logger.error("Invalid option. Please, try again...");
-				option = scanner.nextInt();
-				selectedOption = LibraryManagementOptions.getEnumByOption(option);
+			while (selectedSystemOption == null) {
+				logger.error("Invalid system option. Please, try again...");
+				systemOption = scanner.nextInt();
+				selectedSystemOption = LibraryManagementOptions.getEnumByOption(systemOption);
 			}
 
-			logger.info("User selected: {}", selectedOption.getDescription());
+			logger.info("User selected: {}", selectedSystemOption.getDescription());
 
-			switch (selectedOption) {
+			switch (selectedSystemOption) {
 				case BOOKS:
-					// TODO: enumerate options for manage books
-					// TODO: add book
-					// TODO: update book
-					// TODO: register a book loan
-					// TODO: list all books
-					// TODO: search book by title
-					// TODO: search book by author
+					booksRepository.manage(scanner);
 					break;
 
 				case AUTHORS:
@@ -112,6 +106,8 @@ public class Main {
 			}
 
 		}
+
+		scanner.close();
 
 		logger.info("Goodbye!");
 		logger.info(new String(new char[25]).replace("\0", "-"));
