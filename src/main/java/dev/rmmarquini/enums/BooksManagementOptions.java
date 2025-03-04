@@ -2,7 +2,7 @@ package dev.rmmarquini.enums;
 
 import java.util.List;
 
-public enum BooksManagementOptions {
+public enum BooksManagementOptions implements MenuOptions<BooksManagementOptions> {
 
 	ADD_BOOK(1, "Add new book"),
 	UPDATE_BOOK(2, "Update book"),
@@ -20,43 +20,30 @@ public enum BooksManagementOptions {
 		this.description = description;
 	}
 
+	@Override
 	public int getOption() {
-		return option;
+		return this.option;
 	}
 
+	@Override
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public static BooksManagementOptions getEnumByOption(int option) {
-		for (BooksManagementOptions value : BooksManagementOptions.values()) {
-			if (value.getOption() == option) {
-				return value;
-			}
-		}
-		return null;
+		return MenuOptions.getEnumByOption(BooksManagementOptions.class, option);
 	}
 
 	public static BooksManagementOptions getEnumByDescription(String description) {
-		for (BooksManagementOptions value : BooksManagementOptions.values()) {
-			if (value.getDescription().equals(description)) {
-				return value;
-			}
-		}
-		return null;
+		return MenuOptions.getEnumByDescription(BooksManagementOptions.class, description);
 	}
 
 	public static BooksManagementOptions getEnum(int option, String description) {
-		for (BooksManagementOptions value : BooksManagementOptions.values()) {
-			if (value.getOption() == option && value.getDescription().equals(description)) {
-				return value;
-			}
-		}
-		return null;
+		return MenuOptions.getEnum(BooksManagementOptions.class, option, description);
 	}
 
 	public static List<BooksManagementOptions> getValues() {
-		return List.of(BooksManagementOptions.values());
+		return MenuOptions.getValues(BooksManagementOptions.class);
 	}
 
 }

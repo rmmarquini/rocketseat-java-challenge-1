@@ -4,6 +4,7 @@ import dev.rmmarquini.entity.Author;
 import dev.rmmarquini.entity.Book;
 import dev.rmmarquini.entity.Library;
 import dev.rmmarquini.enums.BooksManagementOptions;
+import dev.rmmarquini.enums.MenuOptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
