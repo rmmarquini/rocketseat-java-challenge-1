@@ -2,10 +2,12 @@ package dev.rmmarquini.repository;
 
 import dev.rmmarquini.entity.Author;
 import dev.rmmarquini.entity.Library;
+import dev.rmmarquini.enums.AuthorsManagementOptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Scanner;
 
 public class AuthorsRepository extends AbstractRepository {
@@ -45,12 +47,112 @@ public class AuthorsRepository extends AbstractRepository {
 
 	@Override
 	public void manage(Scanner scanner) {
-		// TODO: enumerate options for manage authors
-		// TODO: add author
-		// TODO: update author
-		// TODO: remove author
-		// TODO: list all authors
-		// TODO: search author by name
+
+		boolean keepManaging = true;
+		List<AuthorsManagementOptions> nav = AuthorsManagementOptions.getValues();
+
+		while (keepManaging) {
+			logger.info("Please, choose an option to manage authors:");
+			for (AuthorsManagementOptions value : nav) {
+				logger.info("{} - {}", value.getOption(), value.getDescription());
+			}
+			int authorsOption = scanner.nextInt();
+
+			AuthorsManagementOptions selectedAuthorsOption = AuthorsManagementOptions.getEnumByOption(authorsOption);
+
+			while (selectedAuthorsOption == null) {
+				logger.error("Invalid authors option. Please, try again...");
+				authorsOption = scanner.nextInt();
+				selectedAuthorsOption = AuthorsManagementOptions.getEnumByOption(authorsOption);
+			}
+			scanner.nextLine();
+
+			logger.info("Authors management option selected by user: {}", selectedAuthorsOption.getDescription());
+
+			switch (selectedAuthorsOption) {
+				case ADD_AUTHOR:
+					logger.info("Please, inform the author's name:");
+					String authorName = scanner.nextLine();
+
+					Author authorToAdd = library.getAuthorByName(authorName);
+
+					if (authorToAdd != null) {
+						logger.error("Author already exists.");
+					} else {
+						logger.info("Please, inform the author's birth date (yyyy-MM-dd):");
+						String authorBirthDate = scanner.nextLine();
+						LocalDate birthDate = LocalDate.parse(authorBirthDate);
+						Author author = new Author(generateId(), authorName, birthDate);
+						libraryBuilder.addAuthor(author);
+						libraryBuilder.build();
+						logger.info("Author added successfully.");
+					}
+					break;
+
+				case UPDATE_AUTHOR:
+					logger.info("Please, inform the author's name:");
+					String authorNameToUpdate = scanner.nextLine();
+
+					Author authorToUpdate = library.getAuthorByName(authorNameToUpdate);
+
+					if (authorToUpdate == null) {
+						logger.error("Author not found. Please, try again...");
+					} else {
+						logger.info("Please, inform the author's new name:");
+						String newAuthorName = scanner.nextLine();
+
+						logger.info("Please, inform the author's new birth date (yyyy-MM-dd):");
+						String newAuthorBirthDate = scanner.nextLine();
+						LocalDate newBirthDate = LocalDate.parse(newAuthorBirthDate);
+
+						authorToUpdate.setName(newAuthorName);
+						authorToUpdate.setBirthDate(newBirthDate);
+
+						libraryBuilder.updateAuthor(authorToUpdate);
+						libraryBuilder.build();
+						logger.info("Author updated successfully.");
+					}
+					break;
+
+				case REMOVE_AUTHOR:
+					logger.info("Please, inform the author's name:");
+					String authorNameToDelete = scanner.nextLine();
+
+					Author authorToDelete = library.getAuthorByName(authorNameToDelete);
+
+					if (authorToDelete == null) {
+						logger.error("Author not found.");
+					} else {
+						libraryBuilder.removeAuthor(authorToDelete.getId());
+						libraryBuilder.build();
+						logger.info("Author removed successfully.");
+					}
+					break;
+
+				case LIST_AUTHORS:
+					logger.info("Authors: {}", library.getAuthors());
+					break;
+
+				case SEARCH_AUTHOR_BY_NAME:
+					logger.info("Please, inform the author's name:");
+					String authorNameToSearch = scanner.nextLine();
+
+					Author authorToSearch = library.getAuthorByName(authorNameToSearch);
+
+					if (authorToSearch == null) {
+						logger.error("Author not found.");
+					} else {
+						logger.info("Author found: {}", authorToSearch);
+					}
+					break;
+
+				default:
+					keepManaging = false;
+					break; // EXIT
+			}
+
+		}
+
 	}
 
 }

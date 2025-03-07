@@ -96,16 +96,14 @@ public class BooksRepository extends AbstractRepository {
 				booksOption = scanner.nextInt();
 				selectedBooksOption = BooksManagementOptions.getEnumByOption(booksOption);
 			}
+			scanner.nextLine(); // Consume the newline character
 
 			logger.info("Books management option selected by user: {}", selectedBooksOption.getDescription());
 
 			switch (selectedBooksOption) {
 				case ADD_BOOK:
-
 					List<Author> bookAuthors = new LinkedList<>();
 					boolean keepAddingAuthors = true;
-
-					scanner.nextLine(); // Consume the newline character
 
 					logger.info("Please, inform the book's author(s):");
 					while (keepAddingAuthors) {
@@ -158,7 +156,6 @@ public class BooksRepository extends AbstractRepository {
 										logger.info("Book added successfully.");
 									}
 							);
-
 					break;
 
 				case UPDATE_BOOK:
@@ -177,7 +174,6 @@ public class BooksRepository extends AbstractRepository {
 
 				case SEARCH_BOOK_BY_TITLE:
 					logger.info("Please, enter the book title:");
-					scanner.nextLine(); // Consume the newline character
 					String title = scanner.nextLine();
 					Book bookByTitle = library.getBookByTitle(title);
 					logger.info(message(bookByTitle));
@@ -185,7 +181,6 @@ public class BooksRepository extends AbstractRepository {
 
 				case SEARCH_BOOK_BY_AUTHOR:
 					logger.info("Please, enter the author name:");
-					scanner.nextLine(); // Consume the newline character
 					String authorName = scanner.nextLine();
 					List<Book> booksByAuthor = library.getBookByAuthor(authorName);
 					if (booksByAuthor == null) {
