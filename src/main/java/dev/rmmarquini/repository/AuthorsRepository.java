@@ -1,6 +1,7 @@
 package dev.rmmarquini.repository;
 
 import dev.rmmarquini.entity.Author;
+import dev.rmmarquini.entity.Book;
 import dev.rmmarquini.entity.Library;
 import dev.rmmarquini.enums.AuthorsManagementOptions;
 import org.apache.logging.log4j.LogManager;
@@ -69,31 +70,16 @@ public class AuthorsRepository extends AbstractRepository {
 
 			logger.info("Authors management option selected by user: {}", selectedAuthorsOption.getDescription());
 
+			logger.info("Please, inform the author's name:");
+			String authorName = scanner.nextLine();
+
 			switch (selectedAuthorsOption) {
 				case ADD_AUTHOR:
-					logger.info("Please, inform the author's name:");
-					String authorName = scanner.nextLine();
-
-					Author authorToAdd = library.getAuthorByName(authorName);
-
-					if (authorToAdd != null) {
-						logger.error("Author already exists.");
-					} else {
-						logger.info("Please, inform the author's birth date (yyyy-MM-dd):");
-						String authorBirthDate = scanner.nextLine();
-						LocalDate birthDate = LocalDate.parse(authorBirthDate);
-						Author author = new Author(generateId(), authorName, birthDate);
-						libraryBuilder.addAuthor(author);
-						libraryBuilder.build();
-						logger.info("Author added successfully.");
-					}
+					addOrGetAuthor(scanner, authorName);
 					break;
 
 				case UPDATE_AUTHOR:
-					logger.info("Please, inform the author's name:");
-					String authorNameToUpdate = scanner.nextLine();
-
-					Author authorToUpdate = library.getAuthorByName(authorNameToUpdate);
+					Author authorToUpdate = library.getAuthorByName(authorName);
 
 					if (authorToUpdate == null) {
 						logger.error("Author not found. Please, try again...");
@@ -115,13 +101,13 @@ public class AuthorsRepository extends AbstractRepository {
 					break;
 
 				case REMOVE_AUTHOR:
-					logger.info("Please, inform the author's name:");
-					String authorNameToDelete = scanner.nextLine();
-
-					Author authorToDelete = library.getAuthorByName(authorNameToDelete);
+					Author authorToDelete = library.getAuthorByName(authorName);
+					List<Book> booksByAuthor = library.getBookByAuthor(authorName);
 
 					if (authorToDelete == null) {
 						logger.error("Author not found.");
+					} else if (!booksByAuthor.isEmpty()) {
+						logger.warn("Author has books associated. Please, remove the books first.");
 					} else {
 						libraryBuilder.removeAuthor(authorToDelete.getId());
 						libraryBuilder.build();
@@ -134,10 +120,7 @@ public class AuthorsRepository extends AbstractRepository {
 					break;
 
 				case SEARCH_AUTHOR_BY_NAME:
-					logger.info("Please, inform the author's name:");
-					String authorNameToSearch = scanner.nextLine();
-
-					Author authorToSearch = library.getAuthorByName(authorNameToSearch);
+					Author authorToSearch = library.getAuthorByName(authorName);
 
 					if (authorToSearch == null) {
 						logger.error("Author not found.");
@@ -153,6 +136,27 @@ public class AuthorsRepository extends AbstractRepository {
 
 		}
 
+	}
+
+	protected Author addOrGetAuthor(Scanner scanner, String authorName) {
+		Author author = library.getAuthorByName(authorName);
+
+		if (author != null) {
+			logger.error("Author already exists.");
+			return author;
+		} else {
+			logger.info("Please, inform the author's birth date (yyyy-MM-dd):");
+			String authorBirthDate = scanner.nextLine();
+
+			LocalDate birthDate = LocalDate.parse(authorBirthDate);
+			Author authorToAdd = new Author(generateId(), authorName, birthDate);
+
+			libraryBuilder.addAuthor(authorToAdd);
+			libraryBuilder.build();
+
+			logger.info("Author added successfully.");
+			return authorToAdd;
+		}
 	}
 
 }

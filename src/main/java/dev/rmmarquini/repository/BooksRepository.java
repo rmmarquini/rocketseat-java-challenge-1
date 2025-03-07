@@ -18,10 +18,12 @@ public class BooksRepository extends AbstractRepository {
 
 	private final Library.Builder libraryBuilder;
 	private final Library library;
+	private final AuthorsRepository authorsRepository;
 
-	public BooksRepository(Library.Builder libraryBuilder, Library library) {
+	public BooksRepository(Library.Builder libraryBuilder, Library library, AuthorsRepository authorsRepository) {
 		this.libraryBuilder = libraryBuilder;
 		this.library = library;
+		this.authorsRepository = authorsRepository;
 	}
 
 	@Override
@@ -103,41 +105,9 @@ public class BooksRepository extends AbstractRepository {
 			switch (selectedBooksOption) {
 				case ADD_BOOK:
 					List<Author> bookAuthors = new LinkedList<>();
-					boolean keepAddingAuthors = true;
 
 					logger.info("Please, inform the book's author(s):");
-					while (keepAddingAuthors) {
-						logger.info("Type the author's name:");
-						String authorName = scanner.nextLine();
-
-						logger.info("Type the author's birth date (yyyy-mm-dd):");
-						String authorBirthDate = scanner.nextLine();
-						String[] authorBirthDateParts = authorBirthDate.split("-");
-
-						Author author = new Author(
-								generateId(),
-								authorName,
-								LocalDate.of(Integer.parseInt(authorBirthDateParts[0]), Integer.parseInt(authorBirthDateParts[1]), Integer.parseInt(authorBirthDateParts[2]))
-						);
-
-						library.getAuthors().stream()
-								.filter(a -> a.getName().equalsIgnoreCase(authorName))
-								.findFirst()
-								.ifPresentOrElse(
-										bookAuthors::add,
-										() -> {
-											libraryBuilder.addAuthor(author);
-											libraryBuilder.build();
-											bookAuthors.add(author);
-										}
-								);
-
-						logger.info("Do you want to add another author? (Y/N)");
-						String answer = scanner.nextLine();
-						if (answer.equalsIgnoreCase("N")) {
-							keepAddingAuthors = false;
-						}
-					}
+					associateAuthorsWithBook(scanner, bookAuthors);
 
 					logger.info("Please, inform the book's title:");
 					String bookTitle = scanner.nextLine();
@@ -159,13 +129,55 @@ public class BooksRepository extends AbstractRepository {
 					break;
 
 				case UPDATE_BOOK:
-					// TODO: implement update book
-					logger.info("Not available yet.");
+					logger.info("Inform which book you want to update:");
+					String bookTitleToUpdate = scanner.nextLine();
+
+					Book bookToUpdate = library.getBookByTitle(bookTitleToUpdate);
+
+					if (bookToUpdate == null) {
+						logger.error("Book not found. Please, try again...");
+					} else {
+						logger.info("Please, inform the book's new title:");
+						String newBookTitle = scanner.nextLine();
+
+						logger.info("Please, inform the book's new status (true/false):");
+						boolean newBookStatus = scanner.nextBoolean();
+
+						bookToUpdate.setTitle(newBookTitle);
+						bookToUpdate.setAvailable(newBookStatus);
+
+						List<Author> bookToUpdateAuthors = bookToUpdate.getAuthors();
+						logger.info("Book's authors: {}", bookToUpdateAuthors);
+						scanner.nextLine(); // Consume the newline character
+
+						logger.info("Would you like to add new authors? (Y/N)");
+						String answer = scanner.nextLine();
+						if (answer.equalsIgnoreCase("Y")) {
+							associateAuthorsWithBook(scanner, bookToUpdateAuthors);
+							bookToUpdate.setAuthors(bookToUpdateAuthors);
+						}
+
+						logger.info("Would you like to remove authors? (Y/N)");
+						answer = scanner.nextLine();
+						if (answer.equalsIgnoreCase("Y")) {
+							removeAuthorFromBook(scanner, bookToUpdateAuthors);
+							bookToUpdate.setAuthors(bookToUpdateAuthors);
+						}
+
+						libraryBuilder.updateBook(bookToUpdate);
+						libraryBuilder.build();
+						logger.info("Book updated successfully.");
+					}
+
 					break;
 
 				case DELETE_BOOK:
-					// TODO: implement delete book
-					logger.info("Not available yet.");
+					logger.info("Which book do you want to delete?");
+					String bookTitleToDelete = scanner.nextLine();
+					Book bookToDelete = library.getBookByTitle(bookTitleToDelete);
+					libraryBuilder.removeBook(bookToDelete.getId());
+					libraryBuilder.build();
+					logger.info("Book deleted successfully.");
 					break;
 
 				case LIST_BOOKS:
@@ -197,6 +209,48 @@ public class BooksRepository extends AbstractRepository {
 
 		}
 
+	}
+
+	private void removeAuthorFromBook(Scanner scanner, List<Author> bookToUpdateAuthors) {
+		boolean keepRemovingAuthors = true;
+		while (keepRemovingAuthors) {
+			logger.info("Please, inform the author's name:");
+			String authorName = scanner.nextLine();
+			Author author = library.getAuthorByName(authorName);
+
+			bookToUpdateAuthors.removeIf(a -> a.getName().equalsIgnoreCase(author.getName()));
+
+			logger.info("Do you want to remove another author? (Y/N)");
+			String answer2 = scanner.nextLine();
+			if (answer2.equalsIgnoreCase("N")) {
+				keepRemovingAuthors = false;
+			}
+		}
+	}
+
+	private void associateAuthorsWithBook(Scanner scanner, List<Author> bookToUpdateAuthors) {
+		boolean keepAddingAuthors = true;
+		while (keepAddingAuthors) {
+			logger.info("Please, inform the author's name:");
+			String authorName = scanner.nextLine();
+			Author author = authorsRepository.addOrGetAuthor(scanner, authorName);
+
+			library.getAuthors().stream()
+					.filter(a -> a.getName().equalsIgnoreCase(author.getName()))
+					.findFirst()
+					.ifPresentOrElse(
+							bookToUpdateAuthors::add,
+							() -> {
+								logger.error("Author not found.");
+							}
+					);
+
+			logger.info("Do you want to add another author? (Y/N)");
+			String answer2 = scanner.nextLine();
+			if (answer2.equalsIgnoreCase("N")) {
+				keepAddingAuthors = false;
+			}
+		}
 	}
 
 	private String message(Book book) {

@@ -30,7 +30,7 @@ public class Main {
 		authorsRepository.load();
 		library = libraryBuilder.build();
 
-		BooksRepository booksRepository = new BooksRepository(libraryBuilder, library);
+		BooksRepository booksRepository = new BooksRepository(libraryBuilder, library, authorsRepository);
 		booksRepository.load();
 		library = libraryBuilder.build();
 
