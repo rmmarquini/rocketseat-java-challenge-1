@@ -4,7 +4,6 @@ import dev.rmmarquini.entity.Author;
 import dev.rmmarquini.entity.Book;
 import dev.rmmarquini.entity.Library;
 import dev.rmmarquini.enums.BooksManagementOptions;
-import dev.rmmarquini.enums.MenuOptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -102,12 +101,74 @@ public class BooksRepository extends AbstractRepository {
 
 			switch (selectedBooksOption) {
 				case ADD_BOOK:
+
+					List<Author> bookAuthors = new LinkedList<>();
+					boolean keepAddingAuthors = true;
+
+					scanner.nextLine(); // Consume the newline character
+
+					logger.info("Please, inform the book's author(s):");
+					while (keepAddingAuthors) {
+						logger.info("Type the author's name:");
+						String authorName = scanner.nextLine();
+
+						logger.info("Type the author's birth date (yyyy-mm-dd):");
+						String authorBirthDate = scanner.nextLine();
+						String[] authorBirthDateParts = authorBirthDate.split("-");
+
+						Author author = new Author(
+								generateId(),
+								authorName,
+								LocalDate.of(Integer.parseInt(authorBirthDateParts[0]), Integer.parseInt(authorBirthDateParts[1]), Integer.parseInt(authorBirthDateParts[2]))
+						);
+
+						library.getAuthors().stream()
+								.filter(a -> a.getName().equalsIgnoreCase(authorName))
+								.findFirst()
+								.ifPresentOrElse(
+										bookAuthors::add,
+										() -> {
+											libraryBuilder.addAuthor(author);
+											libraryBuilder.build();
+											bookAuthors.add(author);
+										}
+								);
+
+						logger.info("Do you want to add another author? (Y/N)");
+						String answer = scanner.nextLine();
+						if (answer.equalsIgnoreCase("N")) {
+							keepAddingAuthors = false;
+						}
+					}
+
+					logger.info("Please, inform the book's title:");
+					String bookTitle = scanner.nextLine();
+
+					Book book = new Book(generateId(), bookTitle, true, LocalDate.now());
+					book.setAuthors(bookAuthors);
+
+					library.getBooks().stream()
+							.filter(b -> b.getTitle().equalsIgnoreCase(bookTitle))
+							.findFirst()
+							.ifPresentOrElse(
+									b -> logger.info("Book already exists."),
+									() -> {
+										libraryBuilder.addBook(book);
+										libraryBuilder.build();
+										logger.info("Book added successfully.");
+									}
+							);
+
 					break;
 
 				case UPDATE_BOOK:
+					// TODO: implement update book
+					logger.info("Not available yet.");
 					break;
 
-				case LOAN_BOOK:
+				case DELETE_BOOK:
+					// TODO: implement delete book
+					logger.info("Not available yet.");
 					break;
 
 				case LIST_BOOKS:

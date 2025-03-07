@@ -6,7 +6,7 @@ public enum BooksManagementOptions implements MenuOptions<BooksManagementOptions
 
 	ADD_BOOK(1, "Add new book"),
 	UPDATE_BOOK(2, "Update book"),
-	LOAN_BOOK(3, "Loan book"),
+	DELETE_BOOK(3, "Delete book"),
 	LIST_BOOKS(4, "List books"),
 	SEARCH_BOOK_BY_TITLE(5, "Search book by title"),
 	SEARCH_BOOK_BY_AUTHOR(6, "Search books by author"),
