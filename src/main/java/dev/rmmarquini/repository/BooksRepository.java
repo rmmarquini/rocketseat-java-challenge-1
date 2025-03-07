@@ -121,8 +121,7 @@ public class BooksRepository extends AbstractRepository {
 							.ifPresentOrElse(
 									b -> logger.info("Book already exists."),
 									() -> {
-										libraryBuilder.addBook(book);
-										libraryBuilder.build();
+										libraryBuilder.addBook(book).build();
 										logger.info("Book added successfully.");
 									}
 							);
@@ -164,8 +163,7 @@ public class BooksRepository extends AbstractRepository {
 							bookToUpdate.setAuthors(bookToUpdateAuthors);
 						}
 
-						libraryBuilder.updateBook(bookToUpdate);
-						libraryBuilder.build();
+						libraryBuilder.updateBook(bookToUpdate).build();
 						logger.info("Book updated successfully.");
 					}
 
@@ -175,8 +173,7 @@ public class BooksRepository extends AbstractRepository {
 					logger.info("Which book do you want to delete?");
 					String bookTitleToDelete = scanner.nextLine();
 					Book bookToDelete = library.getBookByTitle(bookTitleToDelete);
-					libraryBuilder.removeBook(bookToDelete.getId());
-					libraryBuilder.build();
+					libraryBuilder.removeBook(bookToDelete.getId()).build();
 					logger.info("Book deleted successfully.");
 					break;
 
@@ -217,9 +214,7 @@ public class BooksRepository extends AbstractRepository {
 			logger.info("Please, inform the author's name:");
 			String authorName = scanner.nextLine();
 			Author author = library.getAuthorByName(authorName);
-
 			bookToUpdateAuthors.removeIf(a -> a.getName().equalsIgnoreCase(author.getName()));
-
 			logger.info("Do you want to remove another author? (Y/N)");
 			String answer2 = scanner.nextLine();
 			if (answer2.equalsIgnoreCase("N")) {

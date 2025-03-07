@@ -43,6 +43,10 @@ public class Library {
 		return users;
 	}
 
+	public User getUserByName(String name) {
+		return this.users.stream().filter(u -> u.getName().equals(name)).findFirst().orElse(null);
+	}
+
 	public List<Loan> getLoans() {
 		return loans;
 	}

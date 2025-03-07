@@ -94,8 +94,7 @@ public class AuthorsRepository extends AbstractRepository {
 						authorToUpdate.setName(newAuthorName);
 						authorToUpdate.setBirthDate(newBirthDate);
 
-						libraryBuilder.updateAuthor(authorToUpdate);
-						libraryBuilder.build();
+						libraryBuilder.updateAuthor(authorToUpdate).build();
 						logger.info("Author updated successfully.");
 					}
 					break;
@@ -109,8 +108,7 @@ public class AuthorsRepository extends AbstractRepository {
 					} else if (!booksByAuthor.isEmpty()) {
 						logger.warn("Author has books associated. Please, remove the books first.");
 					} else {
-						libraryBuilder.removeAuthor(authorToDelete.getId());
-						libraryBuilder.build();
+						libraryBuilder.removeAuthor(authorToDelete.getId()).build();
 						logger.info("Author removed successfully.");
 					}
 					break;
@@ -140,20 +138,15 @@ public class AuthorsRepository extends AbstractRepository {
 
 	protected Author addOrGetAuthor(Scanner scanner, String authorName) {
 		Author author = library.getAuthorByName(authorName);
-
 		if (author != null) {
 			logger.error("Author already exists.");
 			return author;
 		} else {
 			logger.info("Please, inform the author's birth date (yyyy-MM-dd):");
 			String authorBirthDate = scanner.nextLine();
-
 			LocalDate birthDate = LocalDate.parse(authorBirthDate);
 			Author authorToAdd = new Author(generateId(), authorName, birthDate);
-
-			libraryBuilder.addAuthor(authorToAdd);
-			libraryBuilder.build();
-
+			libraryBuilder.addAuthor(authorToAdd).build();
 			logger.info("Author added successfully.");
 			return authorToAdd;
 		}
