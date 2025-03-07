@@ -134,6 +134,8 @@ public class LoansRepository extends AbstractRepository {
 					}
 
 					loanToReturn.getCheckedOutBooks().forEach(book -> book.setAvailable(true));
+					loanToReturn.setReturned(true);
+					loanToReturn.setReturnDate(LocalDate.now());
 
 					libraryBuilder.updateLoan(loanToReturn).build();
 
