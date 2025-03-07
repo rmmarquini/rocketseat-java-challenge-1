@@ -1,5 +1,6 @@
 package dev.rmmarquini.entity;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,6 +50,22 @@ public class Library {
 
 	public List<Loan> getLoans() {
 		return loans;
+	}
+
+	public List<Loan> getLoansByUser(User user) {
+		return this.loans.stream().filter(l -> l.getUser().equals(user)).collect(Collectors.toList());
+	}
+
+	public List<Loan> getLoansByBook(Book book) {
+		return this.loans.stream()
+				.map(Loan::getCheckedOutBooks)
+				.filter(books -> books.contains(book))
+				.map(books -> this.loans.stream().filter(l -> new HashSet<>(l.getCheckedOutBooks()).containsAll(books)).findFirst().orElse(null))
+				.collect(Collectors.toList());
+	}
+
+	public List<Loan> getLoansByDate(String date) {
+		return this.loans.stream().filter(l -> l.getCheckOutDate().toString().equals(date)).collect(Collectors.toList());
 	}
 
 	public static class Builder {

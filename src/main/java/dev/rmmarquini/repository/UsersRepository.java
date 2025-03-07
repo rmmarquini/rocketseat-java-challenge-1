@@ -38,12 +38,6 @@ public class UsersRepository extends AbstractRepository {
 
 	@Override
 	public void manage(Scanner scanner) {
-		// TODO: enumerate options for manage users
-		// TODO: add user
-		// TODO: update user
-		// TODO: remove user
-		// TODO: list all users
-		// TODO: search user by name
 
 		boolean keepManaging = true;
 		List<UsersManagementOptions> nav = UsersManagementOptions.getValues();
