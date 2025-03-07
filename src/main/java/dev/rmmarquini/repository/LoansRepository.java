@@ -26,6 +26,8 @@ public class LoansRepository extends AbstractRepository {
 	@Override
 	public void manage(Scanner scanner) {
 		// TODO: enumerate options for manage loans
+		// TODO: loan book
+		// TODO: return book
 		// TODO: list all loans
 		// TODO: list loans by user
 		// TODO: list loans by book
